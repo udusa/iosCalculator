@@ -15,6 +15,7 @@ func multiply(opt1: Double,opt2: Double) -> Double{
 class CalculatorModel
 {
     private var acc = 0.0
+    private var internalProgram =  [AnyObject]()
     
     private var bindingOpt: BindingOperationInfo?
     
@@ -50,9 +51,11 @@ class CalculatorModel
     
     func setOperand(operand: Double){
         acc = operand
+        internalProgram.append(operand as AnyObject)
     }
     
     func performOperation(symbol: String){
+        internalProgram.append(symbol as AnyObject)
         if let operation = operators[symbol]{
             switch operation {
             case .Consts(let value):
@@ -66,6 +69,33 @@ class CalculatorModel
                 executeBindingOpt()
             }
         }
+    }
+    //Creates new type 'PropertyList' same type as AnyObject type, like typedef in c or c++
+    typealias PropertyList = AnyObject
+    
+    var program: PropertyList {
+        get{
+            return internalProgram as PropertyList
+        }
+        set{
+            clear()
+            if let arrOfOps = newValue as? [AnyObject]{
+                for op in arrOfOps{
+                    if let operand = op as? Double{
+                        setOperand(operand: operand)
+                    }
+                    else if let  operation = op as? String{
+                         performOperation(symbol: operation)
+                    }
+                    
+                }
+            }
+        }
+    }
+    private func clear(){
+        acc = 0.0
+        bindingOpt = nil;
+        internalProgram.removeAll()
     }
     //by implementing only the "get" it will behave like READ ONLY
     var result: Double {

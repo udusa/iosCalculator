@@ -47,8 +47,7 @@ class ViewController: UIViewController {
         }
         userIsTyping = true
     }
-    
- 
+
 
     @IBAction private func mathAction(_ sender: UIButton) {
         if userIsTyping {
@@ -60,5 +59,18 @@ class ViewController: UIViewController {
         }
         displayValue = calculator.result
     }
+    var savedProgram: CalculatorModel.PropertyList?
+    @IBAction func save() {
+        savedProgram = calculator.program
+    }
+    
+    @IBAction func restore() {
+        if savedProgram != nil{
+            calculator.program = savedProgram!
+            displayValue = calculator.result
+        }
+    }
+    
+    
 }
 
